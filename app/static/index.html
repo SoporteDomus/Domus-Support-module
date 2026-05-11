@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Zendesk Dashboard — Domus</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0c0c0f;
+    --surface:   #13131a;
+    --border:    #1e1e2a;
+    --accent:    #5b6af0;
+    --accent2:   #3dffc0;
+    --text:      #e8e8f0;
+    --muted:     #555568;
+    --card-bg:   #16161f;
+    --radius:    12px;
+    --font-head: 'Syne', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 28px 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+  }
+
+  .logo-dot {
+    width: 10px; height: 10px;
+    background: var(--accent2);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--accent2);
+  }
+
+  header h1 {
+    font-family: var(--font-head);
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  header span {
+    font-size: 13px;
+    color: var(--muted);
+    margin-left: auto;
+    font-family: var(--font-mono);
+  }
+
+  main { padding: 48px; max-width: 1100px; margin: 0 auto; }
+
+  /* ── Filtro ── */
+  .filter-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    display: flex;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field label { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+  input[type="date"] {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color .2s;
+    color-scheme: dark;
+  }
+  input[type="date"]:focus { border-color: var(--accent); }
+
+  button#run {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-head);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 11px 28px;
+    cursor: pointer;
+    transition: opacity .2s, transform .1s;
+    letter-spacing: .3px;
+    white-space: nowrap;
+  }
+  button#run:hover  { opacity: .88; }
+  button#run:active { transform: scale(.97); }
+  button#run:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* ── Sección título ── */
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 20px;
+    font-family: var(--font-head);
+    font-weight: 600;
+  }
+
+  /* ── Métricas de resolución ── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 56px;
+  }
+
+  .metric-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color .2s;
+  }
+  .metric-card:hover { border-color: var(--accent); }
+
+  .metric-card .label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .metric-card .value {
+    font-family: var(--font-head);
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .metric-card .unit {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .metric-card.highlight .value { color: var(--accent2); }
+
+  /* ── Causa section ── */
+  .causa-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 56px;
+  }
+
+  @media (max-width: 720px) { .causa-grid { grid-template-columns: 1fr; } }
+
+  .table-card, .chart-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    overflow: hidden;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead th {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 0 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:last-child { border-bottom: none; }
+
+  tbody td {
+    padding: 11px 0;
+    color: var(--text);
+  }
+
+  td.num {
+    text-align: right;
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--accent2);
+  }
+
+  .chart-card canvas { width: 100% !important; }
+
+  /* ── Estado loading / error ── */
+  .status {
+    text-align: center;
+    padding: 40px;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: .5px;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 18px; height: 18px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-msg { color: #f07; font-size: 13px; padding: 12px 16px; background: rgba(255,0,68,.07); border-radius: 8px; border: 1px solid rgba(255,0,68,.15); }
+
+  .hidden { display: none; }
+
+  /* ── Divider ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0 0 48px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-dot"></div>
+  <h1>Soporte Dashboard</h1>
+  <span>Zendesk · Domus</span>
+</header>
+
+<main>
+
+  <!-- Filtro -->
+  <div class="filter-card">
+    <div class="field">
+      <label>Fecha inicio</label>
+      <input type="date" id="date-from" value="2026-04-06"/>
+    </div>
+    <div class="field">
+      <label>Fecha fin</label>
+      <input type="date" id="date-to" value="2026-04-10"/>
+    </div>
+    <button id="run">Consultar</button>
+    <div id="error-msg" class="error-msg hidden"></div>
+  </div>
+
+  <!-- Sección 1: Resolución -->
+  <p class="section-label">Tiempo de primera resolución</p>
+
+  <div id="res-loading" class="status hidden"><span class="spinner"></span>Consultando métricas...</div>
+
+  <div id="res-content" class="hidden">
+    <div class="metrics-grid">
+      <div class="metric-card highlight">
+        <span class="label">Tickets</span>
+        <span class="value" id="m-tickets">—</span>
+        <span class="unit">analizados</span>
+      </div>
+      <div class="metric-card">
+        <span class="label">Promedio</span>
+        <span class="value" id="m-promedio">—</span>
+        <span class="unit">minutos (calendario)</span>
+      </div>
+      <div class="metric-card">
+        <span class="label">Mediana</span>
+        <span class="value" id="m-mediana">—</span>
+        <span class="unit">minutos (calendario)</span>
+      </div>
+      <div class="metric-card">
+        <span class="label">Mínimo</span>
+        <span class="value" id="m-minimo">—</span>
+        <span class="unit">minutos</span>
+      </div>
+      <div class="metric-card">
+        <span class="label">Máximo</span>
+        <span class="value" id="m-maximo">—</span>
+        <span class="unit">minutos</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- Sección 2: Causa -->
+  <p class="section-label">Tickets por causa</p>
+
+  <div id="causa-loading" class="status hidden"><span class="spinner"></span>Consultando causas...</div>
+
+  <div id="causa-content" class="hidden">
+    <div class="causa-grid">
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th>Causa</th><th style="text-align:right">Cantidad</th></tr>
+          </thead>
+          <tbody id="causa-tbody"></tbody>
+        </table>
+      </div>
+      <div class="chart-card">
+        <canvas id="causa-chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+let chartInstance = null;
+
+const $ = id => document.getElementById(id);
+
+function fmt(v) { return v !== null && v !== undefined ? v.toLocaleString('es-CO') : '—'; }
+
+function showError(msg) {
+  const el = $('error-msg');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+function hideError() { $('error-msg').classList.add('hidden'); }
+
+async function run() {
+  const dateFrom = $('date-from').value;
+  const dateTo   = $('date-to').value;
+  if (!dateFrom || !dateTo) { showError('Selecciona ambas fechas.'); return; }
+  if (dateFrom > dateTo)    { showError('La fecha inicio debe ser anterior a la fecha fin.'); return; }
+  hideError();
+
+  const btn = $('run');
+  btn.disabled = true;
+  btn.textContent = 'Consultando...';
+
+  // Reset
+  ['res-content','causa-content'].forEach(id => $( id).classList.add('hidden'));
+  ['res-loading','causa-loading'].forEach(id => $(id).classList.remove('hidden'));
+
+  const params = new URLSearchParams({ date_from: dateFrom, date_to: dateTo });
+
+  try {
+    const [resJson, causaJson] = await Promise.all([
+      fetch(`/api/resolution-metrics?${params}`).then(r => r.json()),
+      fetch(`/api/causa-metrics?${params}`).then(r => r.json()),
+    ]);
+
+    // — Métricas de resolución
+    $('m-tickets').textContent  = fmt(resJson.tickets);
+    $('m-promedio').textContent = fmt(resJson.promedio);
+    $('m-mediana').textContent  = fmt(resJson.mediana);
+    $('m-minimo').textContent   = fmt(resJson.minimo);
+    $('m-maximo').textContent   = fmt(resJson.maximo);
+    $('res-loading').classList.add('hidden');
+    $('res-content').classList.remove('hidden');
+
+    // — Tabla causas
+    const tbody = $('causa-tbody');
+    tbody.innerHTML = '';
+    causaJson.tabla.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${row.causa}</td><td class="num">${row.cantidad}</td>`;
+      tbody.appendChild(tr);
+    });
+
+    // — Gráfico causas
+    const labels = causaJson.tabla.map(r => r.causa);
+    const values = causaJson.tabla.map(r => r.cantidad);
+
+    if (chartInstance) chartInstance.destroy();
+    const ctx = $('causa-chart').getContext('2d');
+    chartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          data: values,
+          backgroundColor: labels.map((_, i) =>
+            i === 0 ? '#5b6af0' : i === 1 ? '#3dffc0' : `hsl(${200 + i * 30}, 70%, 60%)`
+          ),
+          borderRadius: 6,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            ticks: { color: '#555568', font: { family: 'DM Mono', size: 11 } },
+            grid:  { color: '#1e1e2a' },
+          },
+          y: {
+            ticks: { color: '#e8e8f0', font: { family: 'DM Mono', size: 12 } },
+            grid:  { display: false },
+          }
+        }
+      }
+    });
+
+    $('causa-loading').classList.add('hidden');
+    $('causa-content').classList.remove('hidden');
+
+  } catch (err) {
+    showError('Error al conectar con la API. Revisa el token y la conexión.');
+    ['res-loading','causa-loading'].forEach(id => $(id).classList.add('hidden'));
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Consultar';
+  }
+}
+
+$('run').addEventListener('click', run);
+</script>
+</body>
+</html>
