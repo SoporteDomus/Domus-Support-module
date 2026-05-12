@@ -118,4 +118,46 @@ async def causa_metrics(date_from: str = Query(...), date_to: str = Query(...)):
     return {"total": total, "tabla": tabla}
 
 
+@app.get("/api/tickets-by-causa")
+async def tickets_by_causa(causa: str = Query(...), limit: int = Query(5, ge=1, le=50)):
+    """
+    Devuelve los últimos `limit` tickets cuyo campo personalizado CUSTOM_FIELD_ID
+    coincida con el valor de `causa`, ordenados por fecha de creación descendente.
+    """
+    # Usamos la Search API de Zendesk con el campo personalizado
+    query      = f"type:ticket fieldvalue:{causa}"
+    search_url = f"{BASE_URL}/search.json"
+    params     = {
+        "query":   query,
+        "sort_by": "created_at",
+        "sort_order": "desc",
+        "per_page": limit,
+    }
+
+    async with httpx.AsyncClient(auth=AUTH, timeout=30) as client:
+        r = await client.get(search_url, params=params)
+        r.raise_for_status()
+        data = r.json()
+
+    tickets = []
+    for t in data.get("results", [])[:limit]:
+        # Extraer descripción corta del primer comentario si está disponible
+        description = t.get("description", "")
+        if description and len(description) > 200:
+            description = description[:200].rsplit(" ", 1)[0] + "…"
+
+        tickets.append({
+            "id":             t["id"],
+            "subject":        t.get("subject", ""),
+            "status":         t.get("status", ""),
+            "created_at":     t.get("created_at", ""),
+            "updated_at":     t.get("updated_at", ""),
+            "requester_name": t.get("requester", {}).get("name") if t.get("requester") else None,
+            "assignee_name":  t.get("assignee", {}).get("name") if t.get("assignee") else None,
+            "description":    description,
+        })
+
+    return {"causa": causa, "total": len(tickets), "tickets": tickets}
+
+
 app.mount("/", StaticFiles(directory="static", html=True), name="static")

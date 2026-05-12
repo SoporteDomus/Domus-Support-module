@@ -31,6 +31,7 @@
     padding: 0;
   }
 
+  /* ── Header ── */
   header {
     border-bottom: 1px solid var(--border);
     padding: 28px 48px;
@@ -61,6 +62,50 @@
     margin-left: auto;
     font-family: var(--font-mono);
   }
+
+  /* ── Tabs ── */
+  .tabs-nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 48px;
+    display: flex;
+    gap: 4px;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    font-family: var(--font-head);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .5px;
+    padding: 16px 20px 14px;
+    cursor: pointer;
+    transition: color .2s, border-color .2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tab-btn:hover { color: var(--text); }
+
+  .tab-btn.active {
+    color: var(--accent2);
+    border-bottom-color: var(--accent2);
+  }
+
+  .tab-btn .tab-icon {
+    width: 16px; height: 16px;
+    opacity: .7;
+  }
+
+  .tab-btn.active .tab-icon { opacity: 1; }
+
+  /* ── Tab panels ── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
 
   main { padding: 48px; max-width: 1100px; margin: 0 auto; }
 
@@ -244,6 +289,204 @@
 
   /* ── Divider ── */
   .divider { border: none; border-top: 1px solid var(--border); margin: 0 0 48px; }
+
+
+  /* ════════════════════════════════════════
+     TAB 2 — MÓDULO IA
+  ════════════════════════════════════════ */
+
+  /* Selector de causa */
+  .ai-filter-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    display: flex;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+
+  .ai-filter-card select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color .2s;
+    min-width: 260px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23555568' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+  .ai-filter-card select:focus { border-color: var(--accent); }
+  .ai-filter-card select option { background: var(--card-bg); }
+
+  button#ai-run {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-head);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 11px 28px;
+    cursor: pointer;
+    transition: opacity .2s, transform .1s;
+    letter-spacing: .3px;
+    white-space: nowrap;
+  }
+  button#ai-run:hover  { opacity: .88; }
+  button#ai-run:active { transform: scale(.97); }
+  button#ai-run:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* Tickets list */
+  .tickets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .ticket-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px 24px;
+    align-items: start;
+    transition: border-color .2s, transform .15s;
+    cursor: default;
+  }
+  .ticket-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .ticket-id {
+    font-family: var(--font-head);
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--accent2);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+
+  .ticket-body { min-width: 0; }
+
+  .ticket-subject {
+    font-family: var(--font-head);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ticket-meta {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .ticket-meta span { display: flex; align-items: center; gap: 5px; }
+
+  .ticket-status {
+    font-size: 11px;
+    font-family: var(--font-head);
+    font-weight: 600;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    align-self: start;
+  }
+
+  .status-open     { background: rgba(91,106,240,.15); color: #7d8ef5; border: 1px solid rgba(91,106,240,.25); }
+  .status-pending  { background: rgba(255,180,50,.1);  color: #ffb432; border: 1px solid rgba(255,180,50,.2);  }
+  .status-solved   { background: rgba(61,255,192,.1);  color: #3dffc0; border: 1px solid rgba(61,255,192,.2);  }
+  .status-closed   { background: rgba(85,85,104,.15);  color: #888;    border: 1px solid rgba(85,85,104,.25);  }
+  .status-new      { background: rgba(200,100,255,.12);color: #c87fff; border: 1px solid rgba(200,100,255,.2); }
+
+  .ticket-desc {
+    grid-column: 2 / 3;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin-top: 4px;
+  }
+
+  /* Empty / placeholder state */
+  .ai-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: .5px;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+  }
+
+  .ai-empty .icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    opacity: .4;
+  }
+
+  /* Badge de causa */
+  .causa-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(91,106,240,.12);
+    border: 1px solid rgba(91,106,240,.22);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 11px;
+    color: #7d8ef5;
+    font-family: var(--font-head);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+  }
+
+  .ai-results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .ai-count {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .ai-count strong {
+    color: var(--text);
+    font-family: var(--font-head);
+    font-weight: 800;
+  }
 </style>
 </head>
 <body>
@@ -254,95 +497,208 @@
   <span>Zendesk · Domus</span>
 </header>
 
-<main>
+<!-- ── Tabs navigation ── -->
+<nav class="tabs-nav">
+  <button class="tab-btn active" data-tab="tab-metricas">
+    <svg class="tab-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="9" width="3" height="6" rx="1" fill="currentColor"/>
+      <rect x="6" y="5" width="3" height="10" rx="1" fill="currentColor"/>
+      <rect x="11" y="1" width="3" height="14" rx="1" fill="currentColor"/>
+    </svg>
+    Métricas
+  </button>
+  <button class="tab-btn" data-tab="tab-ia">
+    <svg class="tab-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.22 3.22l1.42 1.42M11.36 11.36l1.42 1.42M3.22 12.78l1.42-1.42M11.36 4.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    Inteligencia Artificial
+  </button>
+</nav>
 
-  <!-- Filtro -->
-  <div class="filter-card">
-    <div class="field">
-      <label>Fecha inicio</label>
-      <input type="date" id="date-from" value="2026-04-06"/>
+<!-- ════════════════════════════════════════
+     TAB 1 — MÉTRICAS
+════════════════════════════════════════ -->
+<div id="tab-metricas" class="tab-panel active">
+  <main>
+
+    <!-- Filtro -->
+    <div class="filter-card">
+      <div class="field">
+        <label>Fecha inicio</label>
+        <input type="date" id="date-from" value="2026-04-06"/>
+      </div>
+      <div class="field">
+        <label>Fecha fin</label>
+        <input type="date" id="date-to" value="2026-04-10"/>
+      </div>
+      <button id="run">Consultar</button>
+      <div id="error-msg" class="error-msg hidden"></div>
     </div>
-    <div class="field">
-      <label>Fecha fin</label>
-      <input type="date" id="date-to" value="2026-04-10"/>
-    </div>
-    <button id="run">Consultar</button>
-    <div id="error-msg" class="error-msg hidden"></div>
-  </div>
 
-  <!-- Sección 1: Resolución -->
-  <p class="section-label">Tiempo de primera resolución</p>
+    <!-- Sección 1: Resolución -->
+    <p class="section-label">Tiempo de primera resolución</p>
 
-  <div id="res-loading" class="status hidden"><span class="spinner"></span>Consultando métricas...</div>
+    <div id="res-loading" class="status hidden"><span class="spinner"></span>Consultando métricas...</div>
 
-  <div id="res-content" class="hidden">
-    <div class="metrics-grid">
-      <div class="metric-card highlight">
-        <span class="label">Tickets</span>
-        <span class="value" id="m-tickets">—</span>
-        <span class="unit">analizados</span>
-      </div>
-      <div class="metric-card">
-        <span class="label">Promedio</span>
-        <span class="value" id="m-promedio">—</span>
-        <span class="unit">minutos (calendario)</span>
-      </div>
-      <div class="metric-card">
-        <span class="label">Mediana</span>
-        <span class="value" id="m-mediana">—</span>
-        <span class="unit">minutos (calendario)</span>
-      </div>
-      <div class="metric-card">
-        <span class="label">Mínimo</span>
-        <span class="value" id="m-minimo">—</span>
-        <span class="unit">minutos</span>
-      </div>
-      <div class="metric-card">
-        <span class="label">Máximo</span>
-        <span class="value" id="m-maximo">—</span>
-        <span class="unit">minutos</span>
+    <div id="res-content" class="hidden">
+      <div class="metrics-grid">
+        <div class="metric-card highlight">
+          <span class="label">Tickets</span>
+          <span class="value" id="m-tickets">—</span>
+          <span class="unit">analizados</span>
+        </div>
+        <div class="metric-card">
+          <span class="label">Promedio</span>
+          <span class="value" id="m-promedio">—</span>
+          <span class="unit">minutos (calendario)</span>
+        </div>
+        <div class="metric-card">
+          <span class="label">Mediana</span>
+          <span class="value" id="m-mediana">—</span>
+          <span class="unit">minutos (calendario)</span>
+        </div>
+        <div class="metric-card">
+          <span class="label">Mínimo</span>
+          <span class="value" id="m-minimo">—</span>
+          <span class="unit">minutos</span>
+        </div>
+        <div class="metric-card">
+          <span class="label">Máximo</span>
+          <span class="value" id="m-maximo">—</span>
+          <span class="unit">minutos</span>
+        </div>
       </div>
     </div>
-  </div>
 
-  <hr class="divider"/>
+    <hr class="divider"/>
 
-  <!-- Sección 2: Causa -->
-  <p class="section-label">Tickets por causa</p>
+    <!-- Sección 2: Causa -->
+    <p class="section-label">Tickets por causa</p>
 
-  <div id="causa-loading" class="status hidden"><span class="spinner"></span>Consultando causas...</div>
+    <div id="causa-loading" class="status hidden"><span class="spinner"></span>Consultando causas...</div>
 
-  <div id="causa-content" class="hidden">
-    <div class="causa-grid">
-      <div class="table-card">
-        <table>
-          <thead>
-            <tr><th>Causa</th><th style="text-align:right">Cantidad</th></tr>
-          </thead>
-          <tbody id="causa-tbody"></tbody>
-        </table>
-      </div>
-      <div class="chart-card">
-        <canvas id="causa-chart"></canvas>
+    <div id="causa-content" class="hidden">
+      <div class="causa-grid">
+        <div class="table-card">
+          <table>
+            <thead>
+              <tr><th>Causa</th><th style="text-align:right">Cantidad</th></tr>
+            </thead>
+            <tbody id="causa-tbody"></tbody>
+          </table>
+        </div>
+        <div class="chart-card">
+          <canvas id="causa-chart"></canvas>
+        </div>
       </div>
     </div>
-  </div>
 
-</main>
+  </main>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     TAB 2 — INTELIGENCIA ARTIFICIAL
+════════════════════════════════════════ -->
+<div id="tab-ia" class="tab-panel">
+  <main>
+
+    <p class="section-label">Explorador de tickets por causa</p>
+
+    <!-- Filtro IA -->
+    <div class="ai-filter-card">
+      <div class="field">
+        <label>Causa</label>
+        <select id="ai-causa-select">
+          <option value="" disabled selected>Selecciona una causa…</option>
+        </select>
+      </div>
+      <button id="ai-run">Buscar tickets</button>
+      <div id="ai-error-msg" class="error-msg hidden"></div>
+    </div>
+
+    <!-- Estado vacío inicial -->
+    <div id="ai-empty" class="ai-empty">
+      <div class="icon">🔍</div>
+      Selecciona una causa para ver los últimos 5 tickets relacionados.
+    </div>
+
+    <!-- Loading -->
+    <div id="ai-loading" class="status hidden">
+      <span class="spinner"></span>Buscando tickets...
+    </div>
+
+    <!-- Resultados -->
+    <div id="ai-results" class="hidden">
+      <div class="ai-results-header">
+        <div id="ai-results-meta" class="ai-count"></div>
+      </div>
+      <div id="ai-tickets-list" class="tickets-list"></div>
+    </div>
+
+  </main>
+</div>
+
 
 <script>
-let chartInstance = null;
+/* ══════════════════════════════════════════════
+   CONFIGURACIÓN
+══════════════════════════════════════════════ */
+const SUBDOMAIN      = 'domustech';
+const EMAIL          = 'soporte@domus.la';
+const API_TOKEN      = 'TU_TOKEN_AQUI';
+const CUSTOM_FIELD_ID = 1500001726262;
+// Las llamadas reales van al backend FastAPI (/api/...)
+// para no exponer credenciales en el frontend.
 
+
+/* ══════════════════════════════════════════════
+   UTILIDADES
+══════════════════════════════════════════════ */
 const $ = id => document.getElementById(id);
-
 function fmt(v) { return v !== null && v !== undefined ? v.toLocaleString('es-CO') : '—'; }
+
+function statusClass(status) {
+  const map = { open: 'status-open', pending: 'status-pending', solved: 'status-solved', closed: 'status-closed', new: 'status-new' };
+  return map[status] || 'status-closed';
+}
+
+function statusLabel(status) {
+  const map = { open: 'Abierto', pending: 'Pendiente', solved: 'Resuelto', closed: 'Cerrado', new: 'Nuevo' };
+  return map[status] || status;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+
+/* ══════════════════════════════════════════════
+   TAB NAVIGATION
+══════════════════════════════════════════════ */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    $(btn.dataset.tab).classList.add('active');
+  });
+});
+
+
+/* ══════════════════════════════════════════════
+   TAB 1 — MÉTRICAS (lógica original)
+══════════════════════════════════════════════ */
+let chartInstance = null;
 
 function showError(msg) {
   const el = $('error-msg');
   el.textContent = msg;
   el.classList.remove('hidden');
 }
-
 function hideError() { $('error-msg').classList.add('hidden'); }
 
 async function run() {
@@ -356,8 +712,7 @@ async function run() {
   btn.disabled = true;
   btn.textContent = 'Consultando...';
 
-  // Reset
-  ['res-content','causa-content'].forEach(id => $( id).classList.add('hidden'));
+  ['res-content','causa-content'].forEach(id => $(id).classList.add('hidden'));
   ['res-loading','causa-loading'].forEach(id => $(id).classList.remove('hidden'));
 
   const params = new URLSearchParams({ date_from: dateFrom, date_to: dateTo });
@@ -368,7 +723,6 @@ async function run() {
       fetch(`/api/causa-metrics?${params}`).then(r => r.json()),
     ]);
 
-    // — Métricas de resolución
     $('m-tickets').textContent  = fmt(resJson.tickets);
     $('m-promedio').textContent = fmt(resJson.promedio);
     $('m-mediana').textContent  = fmt(resJson.mediana);
@@ -377,7 +731,6 @@ async function run() {
     $('res-loading').classList.add('hidden');
     $('res-content').classList.remove('hidden');
 
-    // — Tabla causas
     const tbody = $('causa-tbody');
     tbody.innerHTML = '';
     causaJson.tabla.forEach(row => {
@@ -386,7 +739,9 @@ async function run() {
       tbody.appendChild(tr);
     });
 
-    // — Gráfico causas
+    // Poblar también el select del módulo IA con las causas disponibles
+    populateAiCausaSelect(causaJson.tabla.map(r => r.causa));
+
     const labels = causaJson.tabla.map(r => r.causa);
     const values = causaJson.tabla.map(r => r.cantidad);
 
@@ -434,6 +789,133 @@ async function run() {
 }
 
 $('run').addEventListener('click', run);
+
+
+/* ══════════════════════════════════════════════
+   TAB 2 — MÓDULO IA
+══════════════════════════════════════════════ */
+
+/**
+ * Llena el <select> de causas.
+ * Se llama automáticamente cuando Tab 1 trae datos de causas,
+ * o se puede llamar manualmente si el usuario va directo a la tab IA.
+ */
+function populateAiCausaSelect(causas) {
+  const sel = $('ai-causa-select');
+  const current = sel.value;
+
+  // Limpiar opciones excepto placeholder
+  while (sel.options.length > 1) sel.remove(1);
+
+  causas.forEach(causa => {
+    const opt = document.createElement('option');
+    opt.value = causa;
+    opt.textContent = causa;
+    sel.appendChild(opt);
+  });
+
+  // Restaurar selección si sigue disponible
+  if (current && causas.includes(current)) sel.value = current;
+}
+
+/**
+ * Carga las causas directamente desde la API si el usuario
+ * entra al módulo IA sin haber consultado Tab 1 primero.
+ */
+async function ensureCausasLoaded() {
+  const sel = $('ai-causa-select');
+  if (sel.options.length > 1) return; // ya tienen datos
+
+  // Rango por defecto: últimos 30 días
+  const today = new Date();
+  const ago30 = new Date(today); ago30.setDate(ago30.getDate() - 30);
+  const fmt2 = d => d.toISOString().slice(0, 10);
+
+  try {
+    const params = new URLSearchParams({ date_from: fmt2(ago30), date_to: fmt2(today) });
+    const data = await fetch(`/api/causa-metrics?${params}`).then(r => r.json());
+    if (data.tabla && data.tabla.length) {
+      populateAiCausaSelect(data.tabla.map(r => r.causa));
+    }
+  } catch (_) { /* silencioso */ }
+}
+
+// Cargar causas al hacer click en la tab IA
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  if (btn.dataset.tab === 'tab-ia') {
+    btn.addEventListener('click', ensureCausasLoaded);
+  }
+});
+
+function showAiError(msg) {
+  const el = $('ai-error-msg');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+function hideAiError() { $('ai-error-msg').classList.add('hidden'); }
+
+async function runAi() {
+  const causa = $('ai-causa-select').value;
+  if (!causa) { showAiError('Selecciona una causa primero.'); return; }
+  hideAiError();
+
+  const btn = $('ai-run');
+  btn.disabled = true;
+  btn.textContent = 'Buscando...';
+
+  $('ai-empty').classList.add('hidden');
+  $('ai-results').classList.add('hidden');
+  $('ai-loading').classList.remove('hidden');
+
+  try {
+    const params = new URLSearchParams({ causa, limit: 5 });
+    const data = await fetch(`/api/tickets-by-causa?${params}`).then(r => r.json());
+
+    const list = $('ai-tickets-list');
+    list.innerHTML = '';
+
+    if (!data.tickets || data.tickets.length === 0) {
+      $('ai-loading').classList.add('hidden');
+      $('ai-empty').classList.remove('hidden');
+      $('ai-empty').innerHTML = `<div class="icon">📭</div>No se encontraron tickets con la causa <strong>${causa}</strong>.`;
+      return;
+    }
+
+    $('ai-results-meta').innerHTML = `Mostrando <strong>${data.tickets.length}</strong> tickets más recientes con causa <span class="causa-badge">${causa}</span>`;
+
+    data.tickets.forEach(t => {
+      const card = document.createElement('div');
+      card.className = 'ticket-card';
+      card.innerHTML = `
+        <div class="ticket-id">#${t.id}</div>
+        <div class="ticket-body">
+          <div class="ticket-subject">${t.subject || '(sin asunto)'}</div>
+          <div class="ticket-meta">
+            <span>📅 ${formatDate(t.created_at)}</span>
+            <span>👤 ${t.requester_name || '—'}</span>
+            ${t.assignee_name ? `<span>🛠 ${t.assignee_name}</span>` : ''}
+          </div>
+          ${t.description ? `<div class="ticket-desc">${t.description}</div>` : ''}
+        </div>
+        <div class="ticket-status ${statusClass(t.status)}">${statusLabel(t.status)}</div>
+      `;
+      list.appendChild(card);
+    });
+
+    $('ai-loading').classList.add('hidden');
+    $('ai-results').classList.remove('hidden');
+
+  } catch (err) {
+    showAiError('Error al obtener tickets. Verifica la conexión con la API.');
+    $('ai-loading').classList.add('hidden');
+    $('ai-empty').classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Buscar tickets';
+  }
+}
+
+$('ai-run').addEventListener('click', runAi);
 </script>
 </body>
 </html>
